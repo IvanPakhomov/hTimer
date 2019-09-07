@@ -52,8 +52,6 @@ export class Timer {
   isExpired() {
     let now = ~~(Date.now() / 1000);
 
-    console.log([now, this.endTime]);
-
     return now >= this.endTime;
   }
 }
