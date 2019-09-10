@@ -3,7 +3,7 @@ export class Timer {
   private _seconds: number = 0;
   private startTime: number = 0;
   private endTime: number = 0;
-  private timeout: NodeJS.Timeout = null;
+  private interval: NodeJS.Timeout = null;
 
   minutes(minutes: number) {
     this._minutes = minutes;
@@ -17,12 +17,16 @@ export class Timer {
     return this;
   }
 
+  async sync() {
+    await new Promise(resolve => this.listen(resolve));
+  }
+
   listen(cb: CallableFunction = null) {
     if (!cb) {
       return;
     }
 
-    this.timeout = setTimeout(() => {
+    this.interval = setInterval(() => {
       if (this.isExpired()) {
         this.stop();
         cb();
@@ -31,8 +35,8 @@ export class Timer {
   }
 
   stop() {
-    if (this.timeout) {
-      clearTimeout(this.timeout);
+    if (this.interval) {
+      clearInterval(this.interval);
     }
   }
 
@@ -45,7 +49,7 @@ export class Timer {
   }
 
   update() {
-    let length = this._minutes * 60 + this._seconds;
+    let length: number = this._minutes * 60 + this._seconds;
     this.endTime = this.startTime + length;
   }
 
